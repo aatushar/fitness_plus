@@ -1,6 +1,3 @@
-// ==================== BMI CALCULATOR PAGE ====================
-// Save as: bmi_calculator_page.dart
-
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -30,6 +27,11 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
   late AnimationController _animationController;
   late Animation<double> _animation;
   double _targetAngle = -math.pi;
+
+  // Dashboard Color Palette
+  static const Color _backgroundColor = Color(0xFF1A1A2E);
+  static const Color _primaryColor = Color(0xFFE94560);
+  static const Color _secondaryColor = Color(0xFF16213E);
 
   @override
   void initState() {
@@ -148,17 +150,17 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: _backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: _backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'BMI Calculator',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -178,7 +180,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
               // Gender Selection
               const Text(
                 'Gender',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 10),
               Row(
@@ -197,7 +199,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
               // Height Input
               const Text(
                 'Height',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               const SizedBox(height: 10),
               Row(
@@ -237,7 +239,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
                     child: ElevatedButton(
                       onPressed: _calculateBMI,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF558B2F),
+                        backgroundColor: _primaryColor,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
@@ -262,7 +264,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
                     child: ElevatedButton(
                       onPressed: _clearFields,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[400],
+                        backgroundColor: _secondaryColor,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
@@ -284,7 +286,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: _secondaryColor,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Column(
@@ -298,23 +300,22 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF558B2F),
+                              color: Colors.white,
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.white.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey[300]!),
                             ),
                             child: const Row(
                               children: [
-                                Icon(Icons.bookmark_border, size: 20),
+                                Icon(Icons.bookmark_border, size: 20, color: Colors.white),
                                 SizedBox(width: 5),
                                 Text(
                                   'save',
-                                  style: TextStyle(fontSize: 12),
+                                  style: TextStyle(fontSize: 12, color: Colors.white),
                                 ),
                               ],
                             ),
@@ -331,6 +332,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -389,7 +391,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFE94560),
+                            backgroundColor: _primaryColor,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
@@ -418,28 +420,30 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 8),
         TextField(
           controller: controller,
           keyboardType: TextInputType.number,
+          style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: TextStyle(color: Colors.grey[600]),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(color: Colors.grey[700]!),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(color: Colors.grey[700]!),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF558B2F), width: 2),
+              borderSide: BorderSide(color: _primaryColor, width: 2),
             ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: _secondaryColor,
           ),
         ),
       ],
@@ -457,10 +461,10 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF2196F3) : Colors.grey[200],
+          color: isSelected ? _primaryColor : _secondaryColor,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isSelected ? const Color(0xFF2196F3) : Colors.grey[300]!,
+            color: isSelected ? _primaryColor : Colors.grey[700]!,
             width: 2,
           ),
         ),
@@ -469,14 +473,14 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
           children: [
             Icon(
               icon,
-              color: isSelected ? Colors.white : Colors.grey[600],
+              color: isSelected ? Colors.white : Colors.grey[400],
               size: 24,
             ),
             const SizedBox(width: 8),
             Text(
               gender,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.grey[600],
+                color: isSelected ? Colors.white : Colors.grey[400],
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -493,11 +497,11 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('• ', style: TextStyle(fontSize: 18)),
+          const Text('• ', style: TextStyle(fontSize: 18, color: Colors.white)),
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(color: Colors.black, fontSize: 14),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
                 children: [
                   TextSpan(text: label, style: const TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(text: ' $value'),
@@ -511,7 +515,7 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> with SingleTicker
   }
 }
 
-// Custom Painter for Animated BMI Gauge
+// Custom Painter for Animated BMI Gauge (remains the same as in the original implementation)
 class BMIGaugePainter extends CustomPainter {
   final double bmi;
   final double needleAngle;
@@ -565,7 +569,7 @@ class BMIGaugePainter extends CustomPainter {
       textPainter.text = TextSpan(
         text: bmiValues[i].toStringAsFixed(0),
         style: const TextStyle(
-          color: Colors.black,
+          color: Colors.white,
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
@@ -607,7 +611,7 @@ class BMIGaugePainter extends CustomPainter {
 
     // Draw animated needle
     final needlePaint = Paint()
-      ..color = Colors.grey[800]!
+      ..color = Colors.white
       ..style = PaintingStyle.fill
       ..strokeWidth = 4;
 
@@ -627,18 +631,18 @@ class BMIGaugePainter extends CustomPainter {
     canvas.drawLine(
       center,
       needleEnd,
-      needlePaint..strokeWidth = 3..color = Colors.grey[800]!,
+      needlePaint..strokeWidth = 3..color = Colors.white,
     );
 
     // Draw center circle
-    canvas.drawCircle(center, 10, Paint()..color = Colors.grey[800]!);
-    canvas.drawCircle(center, 6, Paint()..color = Colors.white);
+    canvas.drawCircle(center, 10, Paint()..color = Colors.white);
+    canvas.drawCircle(center, 6, Paint()..color = const Color(0xFFE94560));
 
     // Draw BMI value in center
     textPainter.text = TextSpan(
       text: 'BMI = ${bmi.toStringAsFixed(1)}',
       style: const TextStyle(
-        color: Colors.black,
+        color: Colors.white,
         fontSize: 22,
         fontWeight: FontWeight.bold,
       ),

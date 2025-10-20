@@ -2,8 +2,9 @@
 // Save as: dashboard.dart
 
 import 'package:fitness_plus/presentation/bmi/pages/bmi_page.dart';
-import 'package:flutter/material.dart';
+import 'package:fitness_plus/presentation/payBill/pages/pay_bill_page.dart';
 
+import 'package:flutter/material.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -39,6 +40,25 @@ class _DashboardState extends State<Dashboard> {
         _savedWeight = result['weight'];
         _savedHeight = result['height'];
       });
+    }
+  }
+
+  void _navigateToPayBill() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PayBillPage(dueAmount: 500.00), // Example due amount
+      ),
+    );
+
+    if (result == true) {
+      // Handle successful payment if needed
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bill payment successful!'),
+          backgroundColor: Colors.green,
+        ),
+      );
     }
   }
 
@@ -135,7 +155,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 const SizedBox(height: 25),
 
-                // BMI Calculator Card - Navigate to BMI Calculator
+                // BMI Calculator Card
                 GestureDetector(
                   onTap: _navigateToBMICalculator,
                   child: Container(
@@ -178,6 +198,60 @@ class _DashboardState extends State<Dashboard> {
                         const SizedBox(height: 15),
                         const Text(
                           'Calculate your Body Mass Index',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 25),
+
+                // Pay Bill Card
+                GestureDetector(
+                  onTap: _navigateToPayBill,
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF16213E), Color(0xFF0F3460)],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Pay Due Bill',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.payment,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        const Text(
+                          'Manage and pay your pending bills',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white70,
@@ -302,7 +376,7 @@ class _DashboardState extends State<Dashboard> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+                                  end:Alignment.bottomRight,
                                   colors: [
                                     const Color(0xFF16213E),
                                     const Color(0xFF16213E).withOpacity(0.8),
@@ -573,6 +647,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  // Helper method for Trending Card
   Widget _buildTrendingCard(String title, String duration, Color bgColor, Color textColor) {
     return Container(
       width: 160,
@@ -619,6 +694,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  // Helper method for Category Chip
   Widget _buildCategoryChip(String label, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(right: 10),
@@ -640,6 +716,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  // Helper method for Workout Program Card
   Widget _buildWorkoutProgramCard(String title) {
     return Container(
       height: 120,
