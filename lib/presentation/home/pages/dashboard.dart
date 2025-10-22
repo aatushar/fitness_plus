@@ -2,6 +2,7 @@
 // Save as: dashboard.dart
 
 import 'package:fitness_plus/presentation/bmi/pages/bmi_page.dart';
+import 'package:fitness_plus/presentation/fee_collection/pages/fee_collection_page.dart';
 import 'package:fitness_plus/presentation/payBill/pages/pay_bill_page.dart';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ class Dashboard extends StatefulWidget {
   State<Dashboard> createState() => _DashboardState();
 }
 
+
+
 class _DashboardState extends State<Dashboard> {
   final TextEditingController _searchController = TextEditingController();
   int _selectedIndex = 0;
@@ -22,11 +25,11 @@ class _DashboardState extends State<Dashboard> {
   double? _savedWeight;
   String? _savedHeight;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  // void _onItemTapped(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  // }
 
   void _navigateToBMICalculator() async {
     final result = await Navigator.push(
@@ -59,6 +62,19 @@ class _DashboardState extends State<Dashboard> {
           backgroundColor: Colors.green,
         ),
       );
+    }
+  }
+  void _onItemTapped(int index) {
+    if (index == 1) {
+      // Navigate to FeeCollectionPage when Stats is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FeeCollectionPage()),
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
     }
   }
 
@@ -617,32 +633,32 @@ class _DashboardState extends State<Dashboard> {
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          backgroundColor: const Color(0xFF16213E),
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: const Color(0xFFE94560),
-          unselectedItemColor: Colors.grey,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart),
-              label: 'Stats',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.article),
-              label: 'Tools',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
-        ),
+          child: BottomNavigationBar(
+            backgroundColor: const Color(0xFF16213E),
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: const Color(0xFFE94560),
+            unselectedItemColor: Colors.grey,
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart),
+                label: 'Stats',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.article),
+                label: 'Tools',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
+          ),
       ),
     );
   }
