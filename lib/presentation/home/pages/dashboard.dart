@@ -2,6 +2,7 @@
 // Save as: dashboard.dart
 
 import 'package:fitness_plus/presentation/bmi/pages/bmi_page.dart';
+import 'package:fitness_plus/presentation/exercises/pages/add_exercise_page.dart';
 import 'package:fitness_plus/presentation/fee_collection/pages/fee_collection_page.dart';
 import 'package:fitness_plus/presentation/payBill/pages/pay_bill_page.dart';
 
@@ -597,6 +598,7 @@ class _DashboardState extends State<Dashboard> {
                 const SizedBox(height: 15),
 
                 // Categories
+
                 SizedBox(
                   height: 40,
                   child: ListView(
@@ -709,15 +711,23 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-
-  // Helper method for Category Chip
   Widget _buildCategoryChip(String label, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(right: 10),
       child: FilterChip(
         label: Text(label),
         selected: isSelected,
-        onSelected: (bool value) {},
+        onSelected: (bool selected) {
+          if (label == 'All') {
+            // Navigate to AddExercisesPage when 'All' is selected
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddExercisesPage(),
+              ),
+            );
+          }
+        },
         backgroundColor: const Color(0xFF16213E),
         selectedColor: const Color(0xFFE94560),
         labelStyle: TextStyle(
