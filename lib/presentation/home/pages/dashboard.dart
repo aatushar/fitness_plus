@@ -5,6 +5,7 @@ import 'package:fitness_plus/presentation/bmi/pages/bmi_page.dart';
 import 'package:fitness_plus/presentation/exercises/pages/add_exercise_page.dart';
 import 'package:fitness_plus/presentation/fee_collection/pages/fee_collection_page.dart';
 import 'package:fitness_plus/presentation/payBill/pages/pay_bill_page.dart';
+import 'package:fitness_plus/presentation/registration_from/pages/registration_member.dart';
 
 import 'package:flutter/material.dart';
 
@@ -72,13 +73,28 @@ class _DashboardState extends State<Dashboard> {
         context,
         MaterialPageRoute(builder: (context) => const FeeCollectionPage()),
       );
+    } else if (index == 2){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationMemberPage()),
+      );}
+    else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+  void _onPressed(int index) {
+    if (index == 2) {
+      // Navigate to FeeCollectionPage when Stats is tapped
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FeeCollectionPage()),
+      );
     } else {
       setState(() {
         _selectedIndex = index;
       });
     }
   }
-
   String _getBMICategory(double bmi) {
     if (bmi < 18.5) return 'Underweight';
     if (bmi < 25) return 'Normal';
