@@ -1,6 +1,8 @@
-import 'package:fitness_plus/presentation/registration_from/pages/member_List.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:fitness_plus/presentation/registration_from/pages/member_List.dart';
 
 class RegistrationMemberPage extends StatefulWidget {
   const RegistrationMemberPage({Key? key}) : super(key: key);
@@ -28,7 +30,118 @@ class _RegistrationMemberPageState extends State<RegistrationMemberPage> {
   final TextEditingController _admissionFeeController = TextEditingController();
 
   String _selectedGender = 'Male';
-  final List<String> _genders = ['Male', 'Female', 'Other'];
+  final List<String> _genders = ['Male', 'Female'];
+  File? _profileImage;
+
+  // Image Picker
+  final ImagePicker _picker = ImagePicker();
+
+  // Method to pick image from camera or gallery
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _profileImage = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      // Handle any errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error picking image: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // Method to show image source bottom sheet
+  void _showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: _secondaryColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Choose Profile Picture',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Camera Option
+                _buildImageSourceButton(
+                  icon: Icons.camera_alt,
+                  label: 'Camera',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _pickImage(ImageSource.camera);
+                  },
+                ),
+                // Gallery Option
+                _buildImageSourceButton(
+                  icon: Icons.photo_library,
+                  label: 'Gallery',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _pickImage(ImageSource.gallery);
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Helper method to build image source buttons
+  Widget _buildImageSourceButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: _primaryColor.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Icon(
+              icon,
+              color: _primaryColor,
+              size: 40,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -43,18 +156,6 @@ class _RegistrationMemberPageState extends State<RegistrationMemberPage> {
     _monthlyFeeController.dispose();
     _admissionFeeController.dispose();
     super.dispose();
-  }
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement form submission logic
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Registration Submitted Successfully'),
-          backgroundColor: _primaryColor,
-        ),
-      );
-    }
   }
 
   @override
@@ -81,17 +182,51 @@ class _RegistrationMemberPageState extends State<RegistrationMemberPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Name Field
-                _buildTextField(
-                  controller: _nameController,
-                  label: 'Full Name',
-                  hint: 'Enter your full name',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
+                // Profile Picture Section
+                Row(
+                  children: [
+                    // Name Field
+                    Expanded(
+                      child: _buildTextField(
+                        controller: _nameController,
+                        label: 'Full Name',
+                        hint: 'Enter your full name',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    // Profile Picture
+                    GestureDetector(
+                      onTap: _showImageSourceDialog,
+                      child: _profileImage != null
+                          ? CircleAvatar(
+                        radius: 60, // Increased size
+                        backgroundImage: FileImage(_profileImage!),
+                      )
+                          : Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _secondaryColor,
+                          border: Border.all(
+                            color: _primaryColor,
+                            width: 2,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: _primaryColor,
+                          size: 50,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
 
@@ -234,12 +369,13 @@ class _RegistrationMemberPageState extends State<RegistrationMemberPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      _submitForm();
-                      // Navigate to MembershipList page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MemberListPage()),
-                      );
+                      if (_formKey.currentState!.validate()) {
+                        // Navigate to MembershipList page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MemberListPage()),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryColor,
