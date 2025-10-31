@@ -1,6 +1,3 @@
-// ==================== PAY BILL PAGE ====================
-// Save as: pay_bill_page.dart
-
 import 'package:flutter/material.dart';
 
 class PayBillPage extends StatefulWidget {
@@ -13,6 +10,11 @@ class PayBillPage extends StatefulWidget {
 }
 
 class _PayBillPageState extends State<PayBillPage> {
+  // Color Constants
+  static const Color _backgroundColor = Color(0xFF1A1A2E);
+  static const Color _primaryColor = Color(0xFFE94560);
+  static const Color _secondaryColor = Color(0xFF16213E);
+
   String _selectedPaymentMethod = '';
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _cardNameController = TextEditingController();
@@ -41,34 +43,73 @@ class _PayBillPageState extends State<PayBillPage> {
       return;
     }
 
-    // Show success dialog
+    // Show success dialog with modified layout to prevent overflow
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.green, size: 30),
-            SizedBox(width: 10),
-            Text('Payment Successful!'),
-          ],
-        ),
-        content: Text(
-          'Your payment of \$${widget.dueAmount.toStringAsFixed(2)} has been processed successfully.',
-          style: const TextStyle(fontSize: 16),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context, true); // Return to dashboard with success
-            },
-            child: const Text(
-              'Done',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+        backgroundColor: _secondaryColor,
+        contentPadding: const EdgeInsets.all(20),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 80,
+                shadows: [
+                  BoxShadow(
+                    color: Colors.green.withOpacity(0.5),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  )
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Payment Successful',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 15),
+              Text(
+                'Your payment of ৳${widget.dueAmount.toStringAsFixed(2)} has been processed successfully.',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context, true); // Return to previous page with success
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Done',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -76,9 +117,9 @@ class _PayBillPageState extends State<PayBillPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: _backgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF16213E),
+        backgroundColor: _secondaryColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -125,7 +166,7 @@ class _PayBillPageState extends State<PayBillPage> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      '\$${widget.dueAmount.toStringAsFixed(2)}',
+                      '৳${widget.dueAmount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 48,
@@ -240,16 +281,16 @@ class _PayBillPageState extends State<PayBillPage> {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: const Color(0xFF16213E),
+          color: _secondaryColor,
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
-            color: isSelected ? const Color(0xFFE94560) : Colors.transparent,
+            color: isSelected ? _primaryColor : Colors.transparent,
             width: 2,
           ),
           boxShadow: isSelected
               ? [
             BoxShadow(
-              color: const Color(0xFFE94560).withOpacity(0.3),
+              color: _primaryColor.withOpacity(0.3),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -262,13 +303,13 @@ class _PayBillPageState extends State<PayBillPage> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xFFE94560).withOpacity(0.2)
+                    ? _primaryColor.withOpacity(0.2)
                     : Colors.grey.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 icon,
-                color: isSelected ? const Color(0xFFE94560) : Colors.grey,
+                color: isSelected ? _primaryColor : Colors.grey,
                 size: 30,
               ),
             ),
@@ -284,9 +325,9 @@ class _PayBillPageState extends State<PayBillPage> {
               ),
             ),
             if (isSelected)
-              const Icon(
+              Icon(
                 Icons.check_circle,
-                color: Color(0xFFE94560),
+                color: _primaryColor,
                 size: 28,
               ),
           ],
@@ -299,7 +340,7 @@ class _PayBillPageState extends State<PayBillPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF16213E),
+        color: _secondaryColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -338,7 +379,7 @@ class _PayBillPageState extends State<PayBillPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF16213E),
+        color: _secondaryColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -377,7 +418,7 @@ class _PayBillPageState extends State<PayBillPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF16213E),
+        color: _secondaryColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -406,7 +447,7 @@ class _PayBillPageState extends State<PayBillPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF16213E),
+        color: _secondaryColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -463,7 +504,7 @@ class _PayBillPageState extends State<PayBillPage> {
           borderRadius: BorderRadius.circular(10),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xFFE94560)),
+          borderSide: BorderSide(color: _primaryColor),
           borderRadius: BorderRadius.circular(10),
         ),
         filled: true,

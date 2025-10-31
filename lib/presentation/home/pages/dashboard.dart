@@ -6,6 +6,7 @@ import 'package:fitness_plus/presentation/exercises/pages/add_exercise_page.dart
 import 'package:fitness_plus/presentation/fee_collection/pages/fee_collection_page.dart';
 import 'package:fitness_plus/presentation/payBill/pages/pay_bill_page.dart';
 import 'package:fitness_plus/presentation/registration_from/pages/registration_member.dart';
+import 'package:fitness_plus/presentation/setting/pages/settings_page.dart';
 
 import 'package:flutter/material.dart';
 
@@ -76,6 +77,13 @@ class _DashboardState extends State<Dashboard> {
     } else if (index == 2){
       Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationMemberPage()),
       );}
+
+    else if (index == 3){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => AddExercisesPage()),
+      );}
+    else if (index == 4){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()),
+      );}
     else {
       setState(() {
         _selectedIndex = index;
@@ -95,6 +103,7 @@ class _DashboardState extends State<Dashboard> {
       });
     }
   }
+
   String _getBMICategory(double bmi) {
     if (bmi < 18.5) return 'Underweight';
     if (bmi < 25) return 'Normal';
@@ -143,7 +152,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         const SizedBox(height: 5),
                         const Text(
-                          'Md. Abdul Alim Tushar',
+                          'Gentleman',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -651,6 +660,7 @@ class _DashboardState extends State<Dashboard> {
             ),
           ],
         ),
+
           child: BottomNavigationBar(
             backgroundColor: const Color(0xFF16213E),
             type: BottomNavigationBarType.fixed,
@@ -664,12 +674,16 @@ class _DashboardState extends State<Dashboard> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.bar_chart),
-                label: 'Stats',
+                icon: Icon(Icons.money),
+                label: 'Fee',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.article),
-                label: 'Tools',
+                icon: Icon(Icons.app_registration_sharp),
+                label: 'Add New',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.sports_gymnastics),
+                label: 'Exercises',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.settings),

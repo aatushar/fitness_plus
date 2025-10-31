@@ -1,6 +1,3 @@
-// ==================== FEE COLLECTION PAGE ====================
-// Save as: fee_collection_page.dart
-
 import 'package:flutter/material.dart';
 
 class FeeCollectionPage extends StatefulWidget {
@@ -11,6 +8,11 @@ class FeeCollectionPage extends StatefulWidget {
 }
 
 class _FeeCollectionPageState extends State<FeeCollectionPage> {
+  // Color Constants
+  static const Color _backgroundColor = Color(0xFF1A1A2E);
+  static const Color _primaryColor = Color(0xFFE94560);
+  static const Color _secondaryColor = Color(0xFF16213E);
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
@@ -19,8 +21,8 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
   double _monthlyCollection = 15750.00;
 
   List<Map<String, dynamic>> _feeRecords = [
-    {'name': 'John Doe', 'mobile': '1234567890', 'amount': 500.00, 'date': 'Today, 10:30 AM'},
-    {'name': 'Jane Smith', 'mobile': '9876543210', 'amount': 750.00, 'date': 'Today, 09:15 AM'},
+    {'name': 'Md. Golap Sikdar', 'mobile': '01782691070', 'amount': 500.00, 'date': 'Today, 10:30 AM'},
+    {'name': 'Tanvir Rahaman', 'mobile': '01516507332', 'amount': 750.00, 'date': 'Today, 09:15 AM'},
   ];
 
   @override
@@ -36,9 +38,9 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
         _mobileController.text.isEmpty ||
         _amountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill all fields'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('Please fill all fields'),
+          backgroundColor: _primaryColor,
         ),
       );
       return;
@@ -47,9 +49,9 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
     final amount = double.tryParse(_amountController.text) ?? 0;
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid amount'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('Please enter a valid amount'),
+          backgroundColor: _primaryColor,
         ),
       );
       return;
@@ -72,8 +74,8 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Fee added successfully!'),
+      SnackBar(
+        content: const Text('Fee added successfully!'),
         backgroundColor: Colors.green,
       ),
     );
@@ -82,9 +84,9 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: _backgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF16213E),
+        backgroundColor: _secondaryColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -117,27 +119,50 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
+                          colors: [
+                            const Color(0xFF4CAF50).withOpacity(0.8),
+                            const Color(0xFF4CAF50)
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF4CAF50).withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            color: const Color(0xFF4CAF50).withOpacity(0.4),
+                            blurRadius: 15,
+                            offset: const Offset(0, 6),
                           ),
                         ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
-                            Icons.today,
-                            color: Colors.white,
-                            size: 30,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Icon(
+                                Icons.today,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text(
+                                  'Daily',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 10),
                           const Text(
@@ -149,10 +174,10 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            '\$${_dailyCollection.toStringAsFixed(2)}',
+                            '৳${_dailyCollection.toStringAsFixed(2)}',
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 28,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -167,27 +192,50 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [Color(0xFF2196F3), Color(0xFF42A5F5)],
+                          colors: [
+                            const Color(0xFF2196F3).withOpacity(0.8),
+                            const Color(0xFF2196F3)
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF2196F3).withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            color: const Color(0xFF2196F3).withOpacity(0.4),
+                            blurRadius: 15,
+                            offset: const Offset(0, 6),
                           ),
                         ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
-                            Icons.calendar_month,
-                            color: Colors.white,
-                            size: 30,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Icon(
+                                Icons.calendar_month,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text(
+                                  'Monthly',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 10),
                           const Text(
@@ -199,10 +247,10 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            '\$${_monthlyCollection.toStringAsFixed(2)}',
+                            '৳${_monthlyCollection.toStringAsFixed(2)}',
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 28,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -228,12 +276,19 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF16213E),
+                  color: _secondaryColor,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFFE94560).withOpacity(0.3),
+                    color: _primaryColor.withOpacity(0.3),
                     width: 1,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 15,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
@@ -244,13 +299,13 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                       decoration: InputDecoration(
                         labelText: 'Member Name',
                         labelStyle: const TextStyle(color: Colors.grey),
-                        prefixIcon: const Icon(Icons.person, color: Color(0xFFE94560)),
+                        prefixIcon: Icon(Icons.person, color: _primaryColor),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]!),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
+                          borderSide: BorderSide(color: _primaryColor, width: 2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         filled: true,
@@ -267,13 +322,13 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                       decoration: InputDecoration(
                         labelText: 'Mobile Number',
                         labelStyle: const TextStyle(color: Colors.grey),
-                        prefixIcon: const Icon(Icons.phone, color: Color(0xFFE94560)),
+                        prefixIcon: Icon(Icons.phone, color: _primaryColor),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]!),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
+                          borderSide: BorderSide(color: _primaryColor, width: 2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         filled: true,
@@ -288,15 +343,15 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                       keyboardType: TextInputType.number,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        labelText: 'Amount (\$)',
+                        labelText: 'Amount (৳)',
                         labelStyle: const TextStyle(color: Colors.grey),
-                        prefixIcon: const Icon(Icons.attach_money, color: Color(0xFFE94560)),
+                        prefixIcon: Icon(Icons.attach_money, color: _primaryColor),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]!),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Color(0xFFE94560), width: 2),
+                          borderSide: BorderSide(color: _primaryColor, width: 2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         filled: true,
@@ -311,7 +366,7 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                       child: ElevatedButton(
                         onPressed: _addManualFee,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE94560),
+                          backgroundColor: _primaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -354,9 +409,9 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text(
+                    child: Text(
                       'View All',
-                      style: TextStyle(color: Color(0xFFE94560)),
+                      style: TextStyle(color: _primaryColor),
                     ),
                   ),
                 ],
@@ -374,12 +429,19 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                     margin: const EdgeInsets.only(bottom: 15),
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF16213E),
+                      color: _secondaryColor,
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(
                         color: Colors.grey[800]!,
                         width: 1,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
@@ -428,7 +490,7 @@ class _FeeCollectionPageState extends State<FeeCollectionPage> {
                           ),
                         ),
                         Text(
-                          '\$${record['amount'].toStringAsFixed(2)}',
+                          '৳${record['amount'].toStringAsFixed(2)}',
                           style: const TextStyle(
                             color: Color(0xFF4CAF50),
                             fontSize: 18,
