@@ -39,17 +39,23 @@ class _RegistrationMemberPageState extends State<RegistrationMemberPage> {
   // Method to pick image from camera or gallery
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final pickedFile = await _picker.pickImage(source: source);
+      final pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1800,
+        maxHeight: 1800,
+        imageQuality: 80,
+      );
+
       if (pickedFile != null) {
         setState(() {
           _profileImage = File(pickedFile.path);
         });
       }
     } catch (e) {
-      // Handle any errors
+      // More generic error handling
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error picking image: $e'),
+          content: Text('An error occurred while picking the image: $e'),
           backgroundColor: Colors.red,
         ),
       );
