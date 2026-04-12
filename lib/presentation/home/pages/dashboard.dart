@@ -1,14 +1,17 @@
-// ==================== DASHBOARD PAGE ====================
-// Save as: dashboard.dart
+// ==================== DASHBOARD PAGE WITH MUSIC PLAYLIST ====================
+// Add this dependency to pubspec.yaml:
+// dependencies:
+//   audioplayers: ^5.2.1
 
 import 'package:fitness_plus/presentation/bmi/pages/bmi_page.dart';
 import 'package:fitness_plus/presentation/exercises/pages/add_exercise_page.dart';
 import 'package:fitness_plus/presentation/fee_collection/pages/fee_collection_page.dart';
+import 'package:fitness_plus/presentation/media/pages/youtube_play_list_page.dart';
 import 'package:fitness_plus/presentation/payBill/pages/pay_bill_page.dart';
 import 'package:fitness_plus/presentation/registration_from/pages/registration_member.dart';
 import 'package:fitness_plus/presentation/setting/pages/settings_page.dart';
-
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -16,8 +19,6 @@ class Dashboard extends StatefulWidget {
   @override
   State<Dashboard> createState() => _DashboardState();
 }
-
-
 
 class _DashboardState extends State<Dashboard> {
   final TextEditingController _searchController = TextEditingController();
@@ -28,11 +29,116 @@ class _DashboardState extends State<Dashboard> {
   double? _savedWeight;
   String? _savedHeight;
 
-  // void _onItemTapped(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //   });
-  // }
+  // Audio Player
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  int? _currentPlayingIndex;
+  bool _isPlaying = false;
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
+
+  // Playlist Data - Replace with your actual audio URLs
+  final List<Map<String, String>> _playlist = [
+    {
+      'title': 'Workout Motivation',
+      'artist': 'Fitness Beats',
+      'duration': '3:45',
+      'url': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      'thumbnail': 'https://via.placeholder.com/60x60/E94560/FFFFFF?text=WM'
+    },
+    {
+      'title': 'High Energy Cardio',
+      'artist': 'Gym Mix',
+      'duration': '4:20',
+      'url': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+      'thumbnail': 'https://via.placeholder.com/60x60/4CAF50/FFFFFF?text=HE'
+    },
+    {
+      'title': 'Strength Training',
+      'artist': 'Power Beats',
+      'duration': '5:10',
+      'url': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+      'thumbnail': 'https://via.placeholder.com/60x60/2196F3/FFFFFF?text=ST'
+    },
+    {
+      'title': 'Cool Down Vibes',
+      'artist': 'Relax Studio',
+      'duration': '3:30',
+      'url': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+      'thumbnail': 'https://via.placeholder.com/60x60/FFD700/000000?text=CD'
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to audio player state changes
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      if (mounted) {
+        setState(() {
+          _isPlaying = state == PlayerState.playing;
+        });
+      }
+    });
+
+    _audioPlayer.onDurationChanged.listen((duration) {
+      if (mounted) {
+        setState(() {
+          _duration = duration;
+        });
+      }
+    });
+
+    _audioPlayer.onPositionChanged.listen((position) {
+      if (mounted) {
+        setState(() {
+          _position = position;
+        });
+      }
+    });
+
+    _audioPlayer.onPlayerComplete.listen((event) {
+      if (mounted) {
+        setState(() {
+          _position = Duration.zero;
+          _isPlaying = false;
+        });
+        // Auto play next song
+        if (_currentPlayingIndex != null && _currentPlayingIndex! < _playlist.length - 1) {
+          _playAudio(_currentPlayingIndex! + 1);
+        }
+      }
+    });
+  }
+
+  Future<void> _playAudio(int index) async {
+    try {
+      if (_currentPlayingIndex == index && _isPlaying) {
+        // Pause current song
+        await _audioPlayer.pause();
+        setState(() {
+          _isPlaying = false;
+        });
+      } else {
+        // Play new song
+        await _audioPlayer.stop();
+        await _audioPlayer.play(UrlSource(_playlist[index]['url']!));
+        setState(() {
+          _currentPlayingIndex = index;
+          _isPlaying = true;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error playing audio: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   void _navigateToBMICalculator() async {
     final result = await Navigator.push(
@@ -53,12 +159,11 @@ class _DashboardState extends State<Dashboard> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const PayBillPage(dueAmount: 500.00), // Example due amount
+        builder: (context) => const PayBillPage(dueAmount: 500.00),
       ),
     );
 
     if (result == true) {
-      // Handle successful payment if needed
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Bill payment successful!'),
@@ -67,35 +172,27 @@ class _DashboardState extends State<Dashboard> {
       );
     }
   }
+
   void _onItemTapped(int index) {
     if (index == 1) {
-      // Navigate to FeeCollectionPage when Stats is tapped
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const FeeCollectionPage()),
       );
-    } else if (index == 2){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationMemberPage()),
-      );}
-
-    else if (index == 3){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => AddExercisesPage()),
-      );}
-    else if (index == 4){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()),
-      );}
-    else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
-  void _onPressed(int index) {
-    if (index == 2) {
-      // Navigate to FeeCollectionPage when Stats is tapped
+    } else if (index == 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const FeeCollectionPage()),
+        MaterialPageRoute(builder: (context) => RegistrationMemberPage()),
+      );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddExercisesPage()),
+      );
+    } else if (index == 4) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SettingsPage()),
       );
     } else {
       setState(() {
@@ -118,9 +215,17 @@ class _DashboardState extends State<Dashboard> {
     return const Color(0xFFF44336);
   }
 
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return '$minutes:$seconds';
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -347,7 +452,6 @@ class _DashboardState extends State<Dashboard> {
                       // Height and Weight Row
                       Row(
                         children: [
-                          // Height Box
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.all(20),
@@ -410,15 +514,13 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           ),
                           const SizedBox(width: 15),
-
-                          // Weight Box
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.topLeft,
-                                  end:Alignment.bottomRight,
+                                  end: Alignment.bottomRight,
                                   colors: [
                                     const Color(0xFF16213E),
                                     const Color(0xFF16213E).withOpacity(0.8),
@@ -623,7 +725,6 @@ class _DashboardState extends State<Dashboard> {
                 const SizedBox(height: 15),
 
                 // Categories
-
                 SizedBox(
                   height: 40,
                   child: ListView(
@@ -643,6 +744,300 @@ class _DashboardState extends State<Dashboard> {
                 _buildWorkoutProgramCard('7 Body Full Exercise'),
                 const SizedBox(height: 15),
                 _buildWorkoutProgramCard('Six-Pack Abs'),
+                const SizedBox(height: 25),
+
+                // ==================== MUSIC PLAYLIST SECTION ====================
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Workout Playlist',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFE94560), Color(0xFFFF6B9D)],
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.music_note, color: Colors.white, size: 16),
+                          const SizedBox(width: 5),
+                          Text(
+                            '${_playlist.length} Songs',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+
+                // Music Playlist
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF16213E),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // Playlist Items
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _playlist.length,
+                        separatorBuilder: (context, index) => Divider(
+                          color: Colors.grey.withOpacity(0.2),
+                          height: 1,
+                        ),
+                        itemBuilder: (context, index) {
+                          final song = _playlist[index];
+                          final isCurrentSong = _currentPlayingIndex == index;
+                          final isPlaying = isCurrentSong && _isPlaying;
+
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: isCurrentSong
+                                  ? const Color(0xFFE94560).withOpacity(0.1)
+                                  : Colors.transparent,
+                              borderRadius: index == 0
+                                  ? const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              )
+                                  : index == _playlist.length - 1
+                                  ? const BorderRadius.only(
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20),
+                              )
+                                  : null,
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 8,
+                              ),
+                              leading: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(song['thumbnail']!),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  if (isPlaying)
+                                    Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Icon(
+                                        Icons.graphic_eq,
+                                        color: Color(0xFFE94560),
+                                        size: 24,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              title: Text(
+                                song['title']!,
+                                style: TextStyle(
+                                  color: isCurrentSong
+                                      ? const Color(0xFFE94560)
+                                      : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              subtitle: Text(
+                                song['artist']!,
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 14,
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    isCurrentSong
+                                        ? _formatDuration(_position)
+                                        : song['duration']!,
+                                    style: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  GestureDetector(
+                                    onTap: () => _playAudio(index),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: isCurrentSong
+                                            ? const Color(0xFFE94560)
+                                            : const Color(0xFF0F3460),
+                                        shape: BoxShape.circle,
+                                        boxShadow: isCurrentSong
+                                            ? [
+                                          BoxShadow(
+                                            color: const Color(0xFFE94560)
+                                                .withOpacity(0.5),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ]
+                                            : [],
+                                      ),
+                                      child: Icon(
+                                        isPlaying ? Icons.pause : Icons.play_arrow,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      // Add More Music Button
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0F3460),
+                          borderRadius: _currentPlayingIndex != null && _isPlaying
+                              ? null
+                              : const BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // Navigate to YouTube playlist page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const YouTubePlaylistPage(),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.add_circle_outline, size: 20),
+                          label: const Text(
+                            'Add More Music',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFE94560),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 5,
+                          ),
+                        ),
+                      ),
+
+                      // Progress Bar (shows when playing)
+                      if (_currentPlayingIndex != null && _isPlaying)
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF0F3460),
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  trackHeight: 3,
+                                  thumbShape: const RoundSliderThumbShape(
+                                    enabledThumbRadius: 6,
+                                  ),
+                                  overlayShape: const RoundSliderOverlayShape(
+                                    overlayRadius: 12,
+                                  ),
+                                ),
+                                child: Slider(
+                                  value: _position.inSeconds.toDouble(),
+                                  max: _duration.inSeconds.toDouble() > 0
+                                      ? _duration.inSeconds.toDouble()
+                                      : 1,
+                                  activeColor: const Color(0xFFE94560),
+                                  inactiveColor: Colors.grey.withOpacity(0.3),
+                                  onChanged: (value) async {
+                                    await _audioPlayer.seek(
+                                      Duration(seconds: value.toInt()),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      _formatDuration(_position),
+                                      style: TextStyle(
+                                        color: Colors.grey[400],
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    Text(
+                                      _formatDuration(_duration),
+                                      style: TextStyle(
+                                        color: Colors.grey[400],
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 80),
               ],
             ),
@@ -660,37 +1055,36 @@ class _DashboardState extends State<Dashboard> {
             ),
           ],
         ),
-
-          child: BottomNavigationBar(
-            backgroundColor: const Color(0xFF16213E),
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: const Color(0xFFE94560),
-            unselectedItemColor: Colors.grey,
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.money),
-                label: 'Fee',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.app_registration_sharp),
-                label: 'Add New',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.sports_gymnastics),
-                label: 'Exercises',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'Settings',
-              ),
-            ],
-          ),
+        child: BottomNavigationBar(
+          backgroundColor: const Color(0xFF16213E),
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: const Color(0xFFE94560),
+          unselectedItemColor: Colors.grey,
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.money),
+              label: 'Fee',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.app_registration_sharp),
+              label: 'Add New',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sports_gymnastics),
+              label: 'Exercises',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -741,6 +1135,7 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
+
   Widget _buildCategoryChip(String label, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(right: 10),
@@ -749,7 +1144,6 @@ class _DashboardState extends State<Dashboard> {
         selected: isSelected,
         onSelected: (bool selected) {
           if (label == 'All') {
-            // Navigate to AddExercisesPage when 'All' is selected
             Navigator.push(
               context,
               MaterialPageRoute(
