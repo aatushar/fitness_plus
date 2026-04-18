@@ -3,8 +3,17 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+<<<<<<< HEAD
   file_selector_windows
   permission_handler_windows
+=======
+  audioplayers_windows
+  file_selector_windows
+  firebase_auth
+  firebase_core
+  permission_handler_windows
+  url_launcher_windows
+>>>>>>> 66c0673279608a47f5aed037ce99cb7467075f83
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
