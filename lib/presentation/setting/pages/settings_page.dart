@@ -1,3 +1,7 @@
+import 'package:fitness_plus/presentation/auth/pages/AuthService.dart';
+import 'package:flutter/material.dart';
+import 'package:fitness_plus/presentation/auth/pages/login_page.dart';
+
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -152,6 +156,69 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
 
               const SizedBox(height: 30),
+
+              const SizedBox(height: 20),
+
+// Logout Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    // Confirmation dialog
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: _secondaryColor,
+                        title: const Text(
+                          'Logout',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        content: const Text(
+                          'আপনি কি সত্যিই logout করতে চান?',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Logout', style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm == true && mounted) {
+                      await AuthService().logout();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
+                            (route) => false, // সব previous routes clear হবে
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
 
               // Version Information
               Center(
