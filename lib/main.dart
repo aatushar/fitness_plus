@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fitness_plus/firebase_options.dart';
 import 'package:fitness_plus/presentation/auth/pages/login_page.dart';
-import 'package:fitness_plus/presentation/home/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
